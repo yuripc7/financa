@@ -1,0 +1,1 @@
+{"root":["./src/App.tsx","./src/main.tsx","./src/store.ts","./src/types.ts","./src/utils.ts","./src/components/Charts.tsx","./src/components/Icon.tsx","./src/hooks/useAnimatedValue.ts","./src/screens/Advisor.tsx","./src/screens/Auth.tsx","./src/screens/Dashboard.tsx","./src/screens/Entries.tsx","./src/screens/Goals.tsx","./src/screens/Reports.tsx"],"version":"5.9.3"}

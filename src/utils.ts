@@ -1,6 +1,7 @@
 import type { AppState, Transaction } from './types';
 import { CATEGORY_MAP } from './store';
 
+// ─── Formatters ──────────────────────────────────────────────────────
 export function brl(n: number): string {
   if (n == null || isNaN(n)) return 'R$ 0,00';
   return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -34,6 +35,7 @@ export function dayLabel(d: string | Date): string {
   return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
 }
 
+// ─── Aggregates ──────────────────────────────────────────────────────
 export function monthSummary(transactions: Transaction[], offset = 0) {
   const now = new Date();
   const target = new Date(now.getFullYear(), now.getMonth() + offset, 1);
@@ -76,9 +78,11 @@ export function forecast(state: AppState, days = 30) {
   const avgExp = series.reduce((s, d) => s + d.expense, 0) / series.length;
   const avgInc = series.reduce((s, d) => s + d.income, 0) / series.length;
   const baseDaily = avgInc - avgExp;
+
   const monthSum = monthSummary(state.transactions, 0);
   let running = monthSum.balance;
   const out = [{ day: 0, value: running, label: 'Hoje' }];
+
   for (let i = 1; i <= days; i++) {
     const futureDate = new Date(); futureDate.setDate(futureDate.getDate() + i);
     let delta = baseDaily;

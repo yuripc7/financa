@@ -1,0 +1,302 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   FINANÇA — design tokens + base
+   ═══════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --font-display: 'Fraunces', 'Times New Roman', serif;
+  --font-sans:    'Instrument Sans', -apple-system, system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', 'SF Mono', Menlo, monospace;
+
+  --bg:       #f4f1ea;
+  --bg-2:     #ebe6db;
+  --surface:  #ffffff;
+  --surface-2:#faf7f0;
+  --ink:      #11100d;
+  --ink-2:    #2b2922;
+  --muted:    #6e6a5d;
+  --muted-2:  #9a9587;
+  --line:     rgba(17,16,13,0.08);
+  --line-2:   rgba(17,16,13,0.16);
+
+  --accent:     #ff5b1f;
+  --accent-ink: #ffffff;
+  --gain:       #1d6f3c;
+  --gain-soft:  #e8f1d9;
+  --loss:       #c0341d;
+  --loss-soft:  #f3dccc;
+  --gold:       #c89a3a;
+  --violet:     #5b3aa6;
+  --sky:        #2a6fdb;
+
+  --radius-sm: 8px;
+  --radius:    14px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+
+  --shadow-sm: 0 1px 2px rgba(17,16,13,0.06), 0 2px 6px rgba(17,16,13,0.04);
+  --shadow:    0 6px 24px rgba(17,16,13,0.08), 0 1px 2px rgba(17,16,13,0.05);
+  --shadow-lg: 0 24px 60px rgba(17,16,13,0.16), 0 2px 6px rgba(17,16,13,0.06);
+}
+
+[data-theme="dark"] {
+  --bg:       #0d0c09;
+  --bg-2:     #16140f;
+  --surface:  #1a1814;
+  --surface-2:#232017;
+  --ink:      #f4f1ea;
+  --ink-2:    #d8d3c3;
+  --muted:    #8a8470;
+  --muted-2:  #5e5a4e;
+  --line:     rgba(244,241,234,0.10);
+  --line-2:   rgba(244,241,234,0.18);
+  --accent:   #ff7a3d;
+  --gain:     #6cd292;
+  --gain-soft:rgba(108,210,146,0.14);
+  --loss:     #ff6a5b;
+  --loss-soft:rgba(255,106,91,0.14);
+  --gold:     #e3b85a;
+  --violet:   #a98aef;
+  --sky:      #6fa8ff;
+  --shadow-sm:0 1px 2px rgba(0,0,0,0.4), 0 2px 6px rgba(0,0,0,0.3);
+  --shadow:   0 6px 24px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-lg:0 24px 60px rgba(0,0,0,0.6), 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* ─── Reset ────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { background: var(--bg); font-family: var(--font-sans); color: var(--ink); -webkit-font-smoothing: antialiased; }
+#root { height: 100%; }
+button { font: inherit; color: inherit; cursor: pointer; }
+input, textarea, select { font: inherit; color: inherit; }
+
+/* ─── Type ─────────────────────────────────────────────────────────── */
+.fnz-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 0.95;
+}
+.fnz-display-italic {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+}
+.fnz-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+.fnz-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ─── Components ───────────────────────────────────────────────────── */
+.fnz-card {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  border: 0.5px solid var(--line);
+  box-shadow: var(--shadow-sm);
+}
+
+.fnz-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 24px; padding: 0 10px; border-radius: 999px;
+  background: var(--surface-2); border: 0.5px solid var(--line);
+  font-size: 11px; font-weight: 500; color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.fnz-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px; height: 44px; padding: 0 18px; border-radius: 999px;
+  border: 0; background: var(--ink); color: var(--bg);
+  font-weight: 600; font-size: 14px; letter-spacing: -0.01em;
+  transition: transform .18s cubic-bezier(.2,.8,.2,1), opacity .15s, background .2s;
+  position: relative; overflow: hidden;
+}
+.fnz-btn::after {
+  content: ''; position: absolute; inset: 0;
+  background: rgba(255,255,255,0); border-radius: inherit;
+  transition: background .15s;
+}
+.fnz-btn:hover { transform: translateY(-2px); }
+.fnz-btn:hover::after { background: rgba(255,255,255,0.08); }
+.fnz-btn:active { transform: scale(0.97); opacity: .9; }
+.fnz-btn.accent { background: var(--accent); color: var(--accent-ink); }
+.fnz-btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line-2); }
+.fnz-btn.sm { height: 34px; padding: 0 14px; font-size: 12px; }
+.fnz-btn.lg { height: 54px; padding: 0 24px; font-size: 16px; }
+
+.fnz-iconbtn {
+  width: 40px; height: 40px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 999px; border: 0.5px solid var(--line);
+  background: var(--surface); color: var(--ink);
+  transition: background .15s, transform .12s, box-shadow .15s;
+}
+.fnz-iconbtn:hover { background: var(--surface-2); box-shadow: var(--shadow-sm); }
+.fnz-iconbtn:active { transform: scale(0.91); }
+
+.fnz-input {
+  width: 100%; height: 48px; padding: 0 14px;
+  border-radius: var(--radius); border: 1px solid var(--line-2);
+  background: var(--surface); color: var(--ink);
+  outline: none; transition: border-color .15s, box-shadow .15s;
+}
+.fnz-input:focus {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 4px rgba(17,16,13,0.06);
+}
+[data-theme="dark"] .fnz-input:focus { box-shadow: 0 0 0 4px rgba(244,241,234,0.08); }
+
+/* ─── Mobile shell ─────────────────────────────────────────────────── */
+.fnz-mobile {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  background: var(--bg); overflow: hidden; position: relative;
+}
+.fnz-mobile-content {
+  flex: 1; overflow-y: auto; overscroll-behavior: contain;
+}
+
+/* ─── Tab bar ──────────────────────────────────────────────────────── */
+.fnz-tabbar {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  background: var(--surface); border-top: 0.5px solid var(--line);
+  padding: 8px 8px 24px; flex-shrink: 0;
+}
+.fnz-tab {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 8px 4px; border: 0; background: transparent;
+  color: var(--muted); font-size: 10px; font-weight: 500;
+  border-radius: 12px; transition: color .2s, transform .15s;
+  position: relative;
+}
+.fnz-tab:active { transform: scale(0.92); }
+.fnz-tab.active { color: var(--ink); }
+.fnz-tab.active::before {
+  content: ''; position: absolute; top: 2px; left: 50%; transform: translateX(-50%);
+  width: 18px; height: 2px; border-radius: 999px; background: var(--accent);
+  animation: fnz-indicator .3s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes fnz-indicator {
+  from { width: 0; opacity: 0; }
+  to   { width: 18px; opacity: 1; }
+}
+
+/* ─── Scrollbars ───────────────────────────────────────────────────── */
+.fnz-scroll::-webkit-scrollbar { width: 4px; }
+.fnz-scroll::-webkit-scrollbar-track { background: transparent; }
+.fnz-scroll::-webkit-scrollbar-thumb { background: var(--line-2); border-radius: 999px; }
+.fnz-scroll { scrollbar-width: thin; scrollbar-color: var(--line-2) transparent; }
+.fnz-scroll-none { scrollbar-width: none; }
+.fnz-scroll-none::-webkit-scrollbar { display: none; }
+
+/* ─── Animations ───────────────────────────────────────────────────── */
+@keyframes fnz-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fnz-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes fnz-scale-in {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes fnz-slide-up {
+  from { opacity: 0; transform: translateY(100%); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fnz-dot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+@keyframes fnz-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes fnz-spin { to { transform: rotate(360deg); } }
+@keyframes fnz-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+@keyframes fnz-fab-pulse {
+  0%, 100% { box-shadow: 0 12px 28px rgba(255,91,31,0.35), 0 0 0 0 rgba(255,91,31,0.4); }
+  50% { box-shadow: 0 12px 28px rgba(255,91,31,0.35), 0 0 0 10px rgba(255,91,31,0); }
+}
+@keyframes fnz-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.fnz-rise { animation: fnz-rise .55s cubic-bezier(.2,.8,.2,1) both; }
+.fnz-scale-in { animation: fnz-scale-in .35s cubic-bezier(.2,.8,.2,1) both; }
+.fnz-fade-in { animation: fnz-fade-in .3s ease both; }
+
+.fnz-rise-stagger > * { animation: fnz-rise .5s cubic-bezier(.2,.8,.2,1) both; }
+.fnz-rise-stagger > *:nth-child(1) { animation-delay: .03s; }
+.fnz-rise-stagger > *:nth-child(2) { animation-delay: .08s; }
+.fnz-rise-stagger > *:nth-child(3) { animation-delay: .13s; }
+.fnz-rise-stagger > *:nth-child(4) { animation-delay: .18s; }
+.fnz-rise-stagger > *:nth-child(5) { animation-delay: .23s; }
+.fnz-rise-stagger > *:nth-child(6) { animation-delay: .28s; }
+.fnz-rise-stagger > *:nth-child(7) { animation-delay: .33s; }
+.fnz-rise-stagger > *:nth-child(8) { animation-delay: .38s; }
+.fnz-rise-stagger > *:nth-child(9) { animation-delay: .43s; }
+
+/* ─── Sheet / Modal backdrop ───────────────────────────────────────── */
+.fnz-backdrop {
+  position: absolute; inset: 0; background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(4px);
+  animation: fnz-fade-in .2s ease both;
+  z-index: 100;
+}
+.fnz-sheet {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: var(--surface); border-radius: 28px 28px 0 0;
+  animation: fnz-slide-up .38s cubic-bezier(.2,.9,.3,1) both;
+  z-index: 101;
+  padding-bottom: env(safe-area-inset-bottom, 24px);
+}
+
+/* ─── Progress bar ─────────────────────────────────────────────────── */
+.fnz-progress-bar {
+  height: 6px; border-radius: 999px;
+  background: var(--surface-2); overflow: hidden;
+}
+.fnz-progress-fill {
+  height: 100%; border-radius: 999px;
+  transition: width 1s cubic-bezier(.2,.8,.2,1);
+}
+
+/* ─── Skeleton ─────────────────────────────────────────────────────── */
+.fnz-skeleton {
+  background: linear-gradient(90deg, var(--surface-2) 0%, var(--line) 50%, var(--surface-2) 100%);
+  background-size: 200% 100%;
+  animation: fnz-shimmer 1.4s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+/* ─── Marquee ──────────────────────────────────────────────────────── */
+.fnz-marquee {
+  display: flex; width: max-content;
+  animation: fnz-marquee 40s linear infinite;
+}
+
+/* ─── Page transition ──────────────────────────────────────────────── */
+.fnz-page-enter {
+  animation: fnz-rise .38s cubic-bezier(.2,.8,.2,1) both;
+}
+
+/* ─── FAB pulse ────────────────────────────────────────────────────── */
+.fnz-fab-pulse {
+  animation: fnz-fab-pulse 2.5s ease-in-out infinite;
+}

@@ -14,7 +14,7 @@ export function useAnimatedValue(target: number, duration = 900): number {
     const tick = (now: number) => {
       if (landed) return;
       const t = Math.min(1, (now - start) / duration);
-      const ease = 1 - Math.pow(1 - t, 3);
+      const ease = 1 - Math.pow(1 - t, 3); // cubic ease out
       setV(from + (target - from) * ease);
       if (t < 1) {
         raf = requestAnimationFrame(tick);
@@ -36,6 +36,7 @@ export function useAnimatedValue(target: number, duration = 900): number {
   return v;
 }
 
+// ─── Real-time clock hook ─────────────────────────────────────────────
 export function useClock(): string {
   const [time, setTime] = useState(() => {
     const now = new Date();
