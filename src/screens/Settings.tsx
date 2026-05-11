@@ -23,8 +23,8 @@ export function Settings({ onLogout }: { onLogout: () => void }) {
           {initials}
         </div>
         <div style={{ flex:1, minWidth:0 }}>
-          <div style={{ fontWeight:700, fontSize:17, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{user?.name || 'Usuario'}</div>
-          <div style={{ fontSize:12, color:'var(--muted)', marginTop:2, fontFamily:'var(--font-mono)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{user?.email}</div>
+          <div style={{ fontWeight:700, fontSize:17 }}>{user?.name || 'Usuario'}</div>
+          <div style={{ fontSize:12, color:'var(--muted)', marginTop:2, fontFamily:'var(--font-mono)' }}>{user?.email}</div>
         </div>
         <div style={{ textAlign:'center', flexShrink:0 }}>
           <ProgressRing value={state.profile.score/100} size={44} thickness={4} color="var(--accent)"/>
@@ -33,7 +33,7 @@ export function Settings({ onLogout }: { onLogout: () => void }) {
       </div>
       <div className="fnz-rise" style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', background:'var(--surface-2)', padding:4, borderRadius:12, marginBottom:16 }}>
         {(['profile','budget','export'] as const).map((t,i) => (
-          <button key={t} onClick={() => setTab(t)} style={{ background:tab===t?'var(--surface)':'transparent', border:0, padding:'8px 0', borderRadius:9, fontSize:11, fontWeight:600, boxShadow:tab===t?'var(--shadow-sm)':'none', color:'var(--ink)', cursor:'pointer', transition:'all .15s' }}>
+          <button key={t} onClick={() => setTab(t)} style={{ background:tab===t?'var(--surface)':'transparent', border:0, padding:'8px 0', borderRadius:9, fontSize:11, fontWeight:600, boxShadow:tab===t?'var(--shadow-sm)':'none', color:'var(--ink)', cursor:'pointer' }}>
             {['Perfil','Orcamento','Exportar'][i]}
           </button>
         ))}
@@ -127,7 +127,7 @@ function BInput({ value, onChange, color }: { value: number; onChange: (v: numbe
   );
   return (
     <button onClick={() => { setTmp(value ? value.toString() : ''); setEditing(true); }}
-      style={{ height:32, padding:'0 10px', borderRadius:8, border:'1.5px solid '+(value?color:'var(--line-2)'), background:value?(color+'18'):'transparent', fontFamily:'var(--font-mono)', fontSize:13, color:value?color:'var(--muted)', cursor:'pointer', minWidth:80, textAlign:'right', transition:'all .15s' }}>
+      style={{ height:32, padding:'0 10px', borderRadius:8, border:'1.5px solid '+(value?color:'var(--line-2)'), background:value?(color+'18'):'transparent', fontFamily:'var(--font-mono)', fontSize:13, color:value?color:'var(--muted)', cursor:'pointer', minWidth:80, textAlign:'right' }}>
       {value ? brl(value) : '+ Limite'}
     </button>
   );
@@ -135,15 +135,14 @@ function BInput({ value, onChange, color }: { value: number; onChange: (v: numbe
 
 function ExportTab({ state }: any) {
   const [done, setDone] = useState(false);
+  const NL = String.fromCharCode(10);
   const exportCSV = () => {
-    const header = 'Data,Descricao,Categoria,Tipo,Valor
-';
+    const header = 'Data,Descricao,Categoria,Tipo,Valor' + NL;
     const rows = state.transactions.map((t: any) => {
       const d = new Date(t.date).toLocaleDateString('pt-BR');
       const kind = t.kind === 'income' ? 'Receita' : 'Despesa';
-      return d + ',"' + t.description + '",' + t.categoryId + ',' + kind + ',' + t.amount.toFixed(2).replace('.', ',');
-    }).join('
-');
+      return d + ',' + t.description + ',' + t.categoryId + ',' + kind + ',' + t.amount.toFixed(2).replace('.', ',');
+    }).join(NL);
     const blob = new Blob([header + rows], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -180,18 +179,14 @@ function ExportTab({ state }: any) {
       </div>
       <div className="fnz-card" style={{ padding:18 }}>
         <div className="fnz-eyebrow" style={{ marginBottom:12 }}>Exportar planilha</div>
-        <p style={{ fontSize:13, color:'var(--muted)', lineHeight:1.5, marginBottom:14 }}>
-          Baixe todas as transacoes em CSV — abre no Excel, Google Sheets ou Numbers.
-        </p>
+        <p style={{ fontSize:13, color:'var(--muted)', lineHeight:1.5, marginBottom:14 }}>Baixe todas as transacoes em CSV.</p>
         <button onClick={exportCSV} className="fnz-btn accent" style={{ width:'100%', height:48 }}>
           {done ? <><Icon name="check" size={16}/> Exportado!</> : <><Icon name="arrow-up-right" size={16}/> Exportar CSV</>}
         </button>
       </div>
       <div className="fnz-card" style={{ padding:18 }}>
         <div className="fnz-eyebrow" style={{ marginBottom:12 }}>Backup completo</div>
-        <p style={{ fontSize:13, color:'var(--muted)', lineHeight:1.5, marginBottom:14 }}>
-          Exporta tudo em JSON para backup ou migracao.
-        </p>
+        <p style={{ fontSize:13, color:'var(--muted)', lineHeight:1.5, marginBottom:14 }}>Exporta tudo em JSON para backup.</p>
         <button onClick={exportJSON} className="fnz-btn ghost" style={{ width:'100%', height:48 }}>
           <Icon name="arrow-up-right" size={16}/> Exportar JSON
         </button>
