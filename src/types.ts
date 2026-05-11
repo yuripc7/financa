@@ -1,5 +1,14 @@
 export type Kind = 'income' | 'expense';
 
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  passwordHash: string;
+  avatar?: string;
+  createdAt: string;
+}
+
 export interface Transaction {
   id: string;
   date: string;
@@ -52,6 +61,11 @@ export interface Profile {
   score: number;
 }
 
+export interface BudgetLimit {
+  categoryId: string;
+  limit: number;
+}
+
 export interface Category {
   id: string;
   label: string;
@@ -70,6 +84,9 @@ export interface AppState {
   onboarded: boolean;
   authed: boolean;
   hideBalance: boolean;
+  currentUser: User | null;
+  budgetLimits: BudgetLimit[];
+  theme: 'light' | 'dark';
 }
 
 export type AppStateUpdate = Partial<AppState> | ((s: AppState) => Partial<AppState>);
