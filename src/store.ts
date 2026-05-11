@@ -3,9 +3,8 @@ import type { AppState, AppStateUpdate, Transaction, Goal, Category } from './ty
 
 const STORAGE_KEY = 'fnz_store_v2';
 
-// ─── Categories ──────────────────────────────────────────────────────
 export const CATEGORIES: Category[] = [
-  { id: 'salario',     label: 'Salário',       emoji: '💼', kind: 'income',  color: '#1d6f3c' },
+  { id: 'salario',     label: 'Salario',       emoji: '💼', kind: 'income',  color: '#1d6f3c' },
   { id: 'freela',      label: 'Freela',        emoji: '🧾', kind: 'income',  color: '#2a6fdb' },
   { id: 'invest',      label: 'Investimentos', emoji: '📈', kind: 'income',  color: '#5b3aa6' },
   { id: 'mercado',     label: 'Mercado',       emoji: '🛒', kind: 'expense', color: '#ff5b1f' },
@@ -13,8 +12,8 @@ export const CATEGORIES: Category[] = [
   { id: 'transporte',  label: 'Transporte',    emoji: '🚗', kind: 'expense', color: '#2a6fdb' },
   { id: 'moradia',     label: 'Moradia',       emoji: '🏠', kind: 'expense', color: '#5b3aa6' },
   { id: 'lazer',       label: 'Lazer',         emoji: '🎬', kind: 'expense', color: '#e35aa2' },
-  { id: 'saude',       label: 'Saúde',         emoji: '💊', kind: 'expense', color: '#1d8a8a' },
-  { id: 'educacao',    label: 'Educação',      emoji: '📚', kind: 'expense', color: '#7a5a3a' },
+  { id: 'saude',       label: 'Saude',         emoji: '💊', kind: 'expense', color: '#1d8a8a' },
+  { id: 'educacao',    label: 'Educacao',      emoji: '📚', kind: 'expense', color: '#7a5a3a' },
   { id: 'assinatura',  label: 'Assinaturas',   emoji: '🔁', kind: 'expense', color: '#c0341d' },
   { id: 'pet',         label: 'Pet',           emoji: '🐾', kind: 'expense', color: '#a85a3a' },
   { id: 'outros',      label: 'Outros',        emoji: '✦',  kind: 'expense', color: '#6e6a5d' },
@@ -22,18 +21,17 @@ export const CATEGORIES: Category[] = [
 
 export const CATEGORY_MAP = Object.fromEntries(CATEGORIES.map(c => [c.id, c])) as Record<string, Category>;
 
-// ─── Auto-categorization ─────────────────────────────────────────────
 const KEYWORDS: Record<string, string[]> = {
-  mercado:     ['mercado','supermercado','extra','pão de açúcar','carrefour','assaí','feira','hortifruti','padaria'],
-  restaurante: ['ifood','rappi','restaurante','lanche','mc','mcdonald','burger','bar','café','starbucks','pizza'],
-  transporte:  ['uber','99','taxi','gasolina','posto','metrô','metro','ônibus','estacionamento'],
-  moradia:     ['aluguel','condomínio','condominio','iptu','luz','enel','cpfl','água','sabesp','gás','internet','vivo','claro'],
+  mercado:     ['mercado','supermercado','extra','carrefour','assai','feira','padaria'],
+  restaurante: ['ifood','rappi','restaurante','lanche','mc','mcdonald','burger','cafe','starbucks','pizza'],
+  transporte:  ['uber','99','taxi','gasolina','posto','metro','onibus','estacionamento'],
+  moradia:     ['aluguel','condominio','iptu','luz','enel','agua','gas','internet','vivo','claro'],
   lazer:       ['cinema','show','ingresso','spotify','netflix','disney','hbo','prime'],
-  saude:       ['farmácia','farmacia','drogaria','consulta','plano de saúde','unimed','amil','academia'],
+  saude:       ['farmacia','drogaria','consulta','plano de saude','unimed','amil','academia'],
   educacao:    ['curso','faculdade','livro','udemy','coursera'],
   assinatura:  ['assinatura','mensalidade'],
-  pet:         ['pet','ração','racao','veterinário'],
-  salario:     ['salário','salario','pagamento'],
+  pet:         ['pet','racao','veterinario'],
+  salario:     ['salario','pagamento'],
   freela:      ['freela','projeto'],
   invest:      ['dividendo','rendimento','tesouro','cdb'],
 };
@@ -46,7 +44,6 @@ export function guessCategory(desc: string): string | null {
   return null;
 }
 
-// ─── Mock data generators ────────────────────────────────────────────
 function makeTx(daysAgo: number, amount: number, desc: string, catId: string, kind: 'income' | 'expense', idSeed: number): Transaction {
   const d = new Date();
   d.setDate(d.getDate() - daysAgo);
@@ -58,51 +55,50 @@ function generateTransactions(): Transaction[] {
   let s = 1;
   const p = (da: number, amt: number, desc: string, cat: string, kind: 'income' | 'expense') =>
     tx.push(makeTx(da, amt, desc, cat, kind, s++));
-
-  p(2,  8500,  'Salário Outubro',       'salario',     'income');
-  p(8,  1200,  'Freela design',         'freela',      'income');
-  p(15, 320,   'Dividendos ITSA4',      'invest',      'income');
-  p(0,  89.50, 'iFood — Janta',         'restaurante', 'expense');
-  p(0,  32.40, 'Uber',                  'transporte',  'expense');
-  p(1,  245.80,'Mercado Extra',         'mercado',     'expense');
-  p(1,  18.90, 'Café Starbucks',        'restaurante', 'expense');
-  p(2,  1850,  'Aluguel',              'moradia',     'expense');
-  p(2,  280,   'Conta de luz Enel',     'moradia',     'expense');
-  p(3,  49.90, 'Spotify Premium',       'lazer',       'expense');
-  p(3,  39.90, 'Netflix',              'lazer',       'expense');
-  p(4,  156.70,'Farmácia Pacheco',      'saude',       'expense');
-  p(5,  420.30,'Mercado Carrefour',     'mercado',     'expense');
-  p(6,  78.00, 'Posto Shell',          'transporte',  'expense');
-  p(7,  32.00, 'Cinema',              'lazer',       'expense');
-  p(8,  145.50,'Restaurante japonês',   'restaurante', 'expense');
-  p(9,  120,   'Internet Vivo Fibra',   'moradia',     'expense');
-  p(10, 89.90, 'Curso Udemy React',     'educacao',    'expense');
-  p(11, 67.40, 'Padaria',             'mercado',     'expense');
-  p(12, 220,   'Pet shop ração',        'pet',         'expense');
-  p(13, 38.50, 'Uber',               'transporte',  'expense');
-  p(14, 178,   'Mercado Pão de Açúcar','mercado',     'expense');
-  p(16, 450,   'Consulta médica',       'saude',       'expense');
-  p(18, 95,    'Show indie rock',       'lazer',       'expense');
-  p(20, 312,   'Mercado Extra',         'mercado',     'expense');
-  p(22, 64.50, '99 corrida',           'transporte',  'expense');
-  p(25, 128,   'Restaurante italiano',  'restaurante', 'expense');
-  p(35, 8500,  'Salário Setembro',      'salario',     'income');
-  p(40, 800,   'Freela logo',          'freela',      'income');
-  p(32, 1850,  'Aluguel',             'moradia',     'expense');
-  p(34, 195,   'Mercado',             'mercado',     'expense');
-  p(36, 98,    'Restaurante',          'restaurante', 'expense');
-  p(38, 280,   'Conta de luz',         'moradia',     'expense');
-  p(42, 320,   'Mercado',             'mercado',     'expense');
-  p(45, 156,   'Farmácia',            'saude',       'expense');
-  p(50, 89.90, 'Cursos',              'educacao',    'expense');
-  p(55, 245,   'Restaurante',          'restaurante', 'expense');
+  p(2,8500,'Salario Outubro','salario','income');
+  p(8,1200,'Freela design','freela','income');
+  p(15,320,'Dividendos ITSA4','invest','income');
+  p(0,89.50,'iFood - Janta','restaurante','expense');
+  p(0,32.40,'Uber','transporte','expense');
+  p(1,245.80,'Mercado Extra','mercado','expense');
+  p(1,18.90,'Cafe Starbucks','restaurante','expense');
+  p(2,1850,'Aluguel','moradia','expense');
+  p(2,280,'Conta de luz Enel','moradia','expense');
+  p(3,49.90,'Spotify Premium','lazer','expense');
+  p(3,39.90,'Netflix','lazer','expense');
+  p(4,156.70,'Farmacia Pacheco','saude','expense');
+  p(5,420.30,'Mercado Carrefour','mercado','expense');
+  p(6,78,'Posto Shell','transporte','expense');
+  p(7,32,'Cinema','lazer','expense');
+  p(8,145.50,'Restaurante japones','restaurante','expense');
+  p(9,120,'Internet Vivo Fibra','moradia','expense');
+  p(10,89.90,'Curso Udemy React','educacao','expense');
+  p(11,67.40,'Padaria','mercado','expense');
+  p(12,220,'Pet shop racao','pet','expense');
+  p(13,38.50,'Uber','transporte','expense');
+  p(14,178,'Mercado Pao de Acucar','mercado','expense');
+  p(16,450,'Consulta medica','saude','expense');
+  p(18,95,'Show indie rock','lazer','expense');
+  p(20,312,'Mercado Extra','mercado','expense');
+  p(22,64.50,'99 corrida','transporte','expense');
+  p(25,128,'Restaurante italiano','restaurante','expense');
+  p(35,8500,'Salario Setembro','salario','income');
+  p(40,800,'Freela logo','freela','income');
+  p(32,1850,'Aluguel','moradia','expense');
+  p(34,195,'Mercado','mercado','expense');
+  p(36,98,'Restaurante','restaurante','expense');
+  p(38,280,'Conta de luz','moradia','expense');
+  p(42,320,'Mercado','mercado','expense');
+  p(45,156,'Farmacia','saude','expense');
+  p(50,89.90,'Cursos','educacao','expense');
+  p(55,245,'Restaurante','restaurante','expense');
   return tx;
 }
 
 function generateGoals(): Goal[] {
   return [
-    { id:'g1', title:'Reserva de emergência', target:30000, current:18750, deadline:'2026-06-01', emoji:'🛡️', color:'#1d6f3c' },
-    { id:'g2', title:'Viagem Japão',          target:18000, current:6420,  deadline:'2026-09-01', emoji:'🗾', color:'#c0341d' },
+    { id:'g1', title:'Reserva de emergencia', target:30000, current:18750, deadline:'2026-06-01', emoji:'🛡️', color:'#1d6f3c' },
+    { id:'g2', title:'Viagem Japao',          target:18000, current:6420,  deadline:'2026-09-01', emoji:'🗾', color:'#c0341d' },
     { id:'g3', title:'MacBook Pro novo',       target:22000, current:14300, deadline:'2026-03-01', emoji:'💻', color:'#5b3aa6' },
     { id:'g4', title:'Curso Mestrado',         target:12000, current:12000, deadline:'2025-12-01', emoji:'🎓', color:'#c89a3a' },
   ];
@@ -114,33 +110,35 @@ function generateInitialState(): AppState {
     goals: generateGoals(),
     recurring: [
       { id:'r1', title:'Aluguel',       amount:1850,  day:5,  categoryId:'moradia', kind:'expense' },
-      { id:'r2', title:'Salário',       amount:8500,  day:1,  categoryId:'salario', kind:'income'  },
+      { id:'r2', title:'Salario',       amount:8500,  day:1,  categoryId:'salario', kind:'income'  },
       { id:'r3', title:'Internet Vivo', amount:120,   day:10, categoryId:'moradia', kind:'expense' },
       { id:'r4', title:'Spotify',       amount:49.90, day:14, categoryId:'lazer',   kind:'expense' },
       { id:'r5', title:'Netflix',       amount:39.90, day:18, categoryId:'lazer',   kind:'expense' },
-      { id:'r6', title:'Plano de saúde',amount:480,   day:20, categoryId:'saude',   kind:'expense' },
+      { id:'r6', title:'Plano saude',   amount:480,   day:20, categoryId:'saude',   kind:'expense' },
       { id:'r7', title:'Academia',      amount:89,    day:12, categoryId:'saude',   kind:'expense' },
     ],
     splits: [
-      { id:'s1', title:'Viagem Floripa', total:1280, with:['Marina','Léo'], yourShare:426.66, status:'pending' },
+      { id:'s1', title:'Viagem Floripa', total:1280, with:['Marina','Leo'], yourShare:426.66, status:'pending' },
       { id:'s2', title:'Janta sushi',    total:320,  with:['Ana'],          yourShare:160,    status:'pending' },
       { id:'s3', title:'Conta luz apto', total:280,  with:['Marina'],       yourShare:140,    status:'paid'    },
     ],
     achievements: [
-      { id:'a1', title:'Mês no azul',             desc:'3 meses seguidos com saldo positivo', earned:true,  emoji:'🌊' },
-      { id:'a2', title:'Caçador de assinaturas',   desc:'Cancelou 2+ assinaturas inativas',   earned:true,  emoji:'✂️' },
-      { id:'a3', title:'Meta concluída',           desc:'Bateu uma meta financeira',           earned:true,  emoji:'🏆' },
-      { id:'a4', title:'Investidor disciplinado',  desc:'Aporte mensal por 6 meses',          earned:false, emoji:'📈' },
-      { id:'a5', title:'Reserva completa',         desc:'Reserva de emergência 100%',         earned:false, emoji:'🛡️' },
+      { id:'a1', title:'Mes no azul',             desc:'3 meses com saldo positivo', earned:true,  emoji:'🌊' },
+      { id:'a2', title:'Cacador de assinaturas',   desc:'Cancelou 2+ assinaturas',    earned:true,  emoji:'✂️' },
+      { id:'a3', title:'Meta concluida',           desc:'Bateu uma meta financeira',   earned:true,  emoji:'🏆' },
+      { id:'a4', title:'Investidor disciplinado',  desc:'Aporte mensal por 6 meses',  earned:false, emoji:'📈' },
+      { id:'a5', title:'Reserva completa',         desc:'Reserva de emergencia 100%', earned:false, emoji:'🛡️' },
     ],
-    profile: { name: 'Você', streakDays: 47, score: 82 },
+    profile: { name: 'Voce', streakDays: 47, score: 82 },
     onboarded: false,
     authed: false,
     hideBalance: false,
+    currentUser: null,
+    budgetLimits: [],
+    theme: 'light',
   };
 }
 
-// ─── Store singleton ─────────────────────────────────────────────────
 type Listener = (state: AppState) => void;
 
 const store = {
@@ -151,7 +149,15 @@ const store = {
     if (this.state) return;
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) { this.state = JSON.parse(raw); return; }
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        // Migrate old state: ensure new fields exist
+        if (!parsed.currentUser) parsed.currentUser = null;
+        if (!parsed.budgetLimits) parsed.budgetLimits = [];
+        if (!parsed.theme) parsed.theme = 'light';
+        this.state = parsed;
+        return;
+      }
     } catch {}
     this.state = generateInitialState();
   },
