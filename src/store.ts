@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import type { AppState, AppStateUpdate, Transaction, Goal, Category } from './types';
 
-const STORAGE_KEY = 'fnz_store_v2';
+// v3 = dados zerados para uso real
+const STORAGE_KEY = 'fnz_store_v3';
 
 export const CATEGORIES: Category[] = [
   { id: 'salario',     label: 'Salario',       emoji: '💼', kind: 'income',  color: '#1d6f3c' },
@@ -44,92 +45,21 @@ export function guessCategory(desc: string): string | null {
   return null;
 }
 
-function makeTx(daysAgo: number, amount: number, desc: string, catId: string, kind: 'income' | 'expense', idSeed: number): Transaction {
-  const d = new Date();
-  d.setDate(d.getDate() - daysAgo);
-  return { id: 't' + idSeed, date: d.toISOString(), amount, description: desc, categoryId: catId, kind, paid: true };
-}
-
-function generateTransactions(): Transaction[] {
-  const tx: Transaction[] = [];
-  let s = 1;
-  const p = (da: number, amt: number, desc: string, cat: string, kind: 'income' | 'expense') =>
-    tx.push(makeTx(da, amt, desc, cat, kind, s++));
-  p(2,8500,'Salario Outubro','salario','income');
-  p(8,1200,'Freela design','freela','income');
-  p(15,320,'Dividendos ITSA4','invest','income');
-  p(0,89.50,'iFood - Janta','restaurante','expense');
-  p(0,32.40,'Uber','transporte','expense');
-  p(1,245.80,'Mercado Extra','mercado','expense');
-  p(1,18.90,'Cafe Starbucks','restaurante','expense');
-  p(2,1850,'Aluguel','moradia','expense');
-  p(2,280,'Conta de luz Enel','moradia','expense');
-  p(3,49.90,'Spotify Premium','lazer','expense');
-  p(3,39.90,'Netflix','lazer','expense');
-  p(4,156.70,'Farmacia Pacheco','saude','expense');
-  p(5,420.30,'Mercado Carrefour','mercado','expense');
-  p(6,78,'Posto Shell','transporte','expense');
-  p(7,32,'Cinema','lazer','expense');
-  p(8,145.50,'Restaurante japones','restaurante','expense');
-  p(9,120,'Internet Vivo Fibra','moradia','expense');
-  p(10,89.90,'Curso Udemy React','educacao','expense');
-  p(11,67.40,'Padaria','mercado','expense');
-  p(12,220,'Pet shop racao','pet','expense');
-  p(13,38.50,'Uber','transporte','expense');
-  p(14,178,'Mercado Pao de Acucar','mercado','expense');
-  p(16,450,'Consulta medica','saude','expense');
-  p(18,95,'Show indie rock','lazer','expense');
-  p(20,312,'Mercado Extra','mercado','expense');
-  p(22,64.50,'99 corrida','transporte','expense');
-  p(25,128,'Restaurante italiano','restaurante','expense');
-  p(35,8500,'Salario Setembro','salario','income');
-  p(40,800,'Freela logo','freela','income');
-  p(32,1850,'Aluguel','moradia','expense');
-  p(34,195,'Mercado','mercado','expense');
-  p(36,98,'Restaurante','restaurante','expense');
-  p(38,280,'Conta de luz','moradia','expense');
-  p(42,320,'Mercado','mercado','expense');
-  p(45,156,'Farmacia','saude','expense');
-  p(50,89.90,'Cursos','educacao','expense');
-  p(55,245,'Restaurante','restaurante','expense');
-  return tx;
-}
-
-function generateGoals(): Goal[] {
-  return [
-    { id:'g1', title:'Reserva de emergencia', target:30000, current:18750, deadline:'2026-06-01', emoji:'🛡️', color:'#1d6f3c' },
-    { id:'g2', title:'Viagem Japao',          target:18000, current:6420,  deadline:'2026-09-01', emoji:'🗾', color:'#c0341d' },
-    { id:'g3', title:'MacBook Pro novo',       target:22000, current:14300, deadline:'2026-03-01', emoji:'💻', color:'#5b3aa6' },
-    { id:'g4', title:'Curso Mestrado',         target:12000, current:12000, deadline:'2025-12-01', emoji:'🎓', color:'#c89a3a' },
-  ];
-}
-
 function generateInitialState(): AppState {
   return {
-    transactions: generateTransactions(),
-    goals: generateGoals(),
-    recurring: [
-      { id:'r1', title:'Aluguel',       amount:1850,  day:5,  categoryId:'moradia', kind:'expense' },
-      { id:'r2', title:'Salario',       amount:8500,  day:1,  categoryId:'salario', kind:'income'  },
-      { id:'r3', title:'Internet Vivo', amount:120,   day:10, categoryId:'moradia', kind:'expense' },
-      { id:'r4', title:'Spotify',       amount:49.90, day:14, categoryId:'lazer',   kind:'expense' },
-      { id:'r5', title:'Netflix',       amount:39.90, day:18, categoryId:'lazer',   kind:'expense' },
-      { id:'r6', title:'Plano saude',   amount:480,   day:20, categoryId:'saude',   kind:'expense' },
-      { id:'r7', title:'Academia',      amount:89,    day:12, categoryId:'saude',   kind:'expense' },
-    ],
-    splits: [
-      { id:'s1', title:'Viagem Floripa', total:1280, with:['Marina','Leo'], yourShare:426.66, status:'pending' },
-      { id:'s2', title:'Janta sushi',    total:320,  with:['Ana'],          yourShare:160,    status:'pending' },
-      { id:'s3', title:'Conta luz apto', total:280,  with:['Marina'],       yourShare:140,    status:'paid'    },
-    ],
+    transactions: [],
+    goals: [],
+    recurring: [],
+    splits: [],
     achievements: [
-      { id:'a1', title:'Mes no azul',             desc:'3 meses com saldo positivo', earned:true,  emoji:'🌊' },
-      { id:'a2', title:'Cacador de assinaturas',   desc:'Cancelou 2+ assinaturas',    earned:true,  emoji:'✂️' },
-      { id:'a3', title:'Meta concluida',           desc:'Bateu uma meta financeira',   earned:true,  emoji:'🏆' },
-      { id:'a4', title:'Investidor disciplinado',  desc:'Aporte mensal por 6 meses',  earned:false, emoji:'📈' },
-      { id:'a5', title:'Reserva completa',         desc:'Reserva de emergencia 100%', earned:false, emoji:'🛡️' },
+      { id:'a1', title:'Primeiro lancamento', desc:'Adicione seu primeiro lancamento',        earned:false, emoji:'✨' },
+      { id:'a2', title:'Primeira meta',        desc:'Crie sua primeira meta financeira',       earned:false, emoji:'🎯' },
+      { id:'a3', title:'Mes no azul',          desc:'Termine o mes com saldo positivo',        earned:false, emoji:'🌊' },
+      { id:'a4', title:'Meta concluida',        desc:'Conclua uma meta financeira',             earned:false, emoji:'🏆' },
+      { id:'a5', title:'Reserva completa',      desc:'Complete sua reserva de emergencia',      earned:false, emoji:'🛡️' },
+      { id:'a6', title:'Investidor',            desc:'Registre seu primeiro investimento',      earned:false, emoji:'📈' },
     ],
-    profile: { name: 'Voce', streakDays: 47, score: 82 },
+    profile: { name: '', streakDays: 0, score: 0 },
     onboarded: false,
     authed: false,
     hideBalance: false,
@@ -151,10 +81,10 @@ const store = {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        // Migrate old state: ensure new fields exist
-        if (!parsed.currentUser) parsed.currentUser = null;
-        if (!parsed.budgetLimits) parsed.budgetLimits = [];
-        if (!parsed.theme) parsed.theme = 'light';
+        if (!parsed.currentUser)   parsed.currentUser = null;
+        if (!parsed.budgetLimits)  parsed.budgetLimits = [];
+        if (!parsed.theme)         parsed.theme = 'light';
+        if (!parsed.achievements)  parsed.achievements = generateInitialState().achievements;
         this.state = parsed;
         return;
       }
@@ -181,7 +111,13 @@ const store = {
   },
 
   addTransaction(tx: Omit<Transaction, 'id' | 'paid'>) {
-    this.set({ transactions: [{ id: 't' + Date.now(), paid: true, ...tx }, ...this.get().transactions] });
+    const newTx = { id: 't' + Date.now(), paid: true, ...tx };
+    this.set({ transactions: [newTx, ...this.get().transactions] });
+    // Unlock first transaction achievement
+    const state = this.get();
+    if (!state.achievements.find(a=>a.id==='a1')?.earned) {
+      this.set({ achievements: state.achievements.map(a => a.id==='a1'?{...a,earned:true}:a) });
+    }
   },
 
   removeTransaction(id: string) {
@@ -193,7 +129,13 @@ const store = {
   },
 
   addGoal(g: Omit<Goal, 'id' | 'current'>) {
-    this.set({ goals: [...this.get().goals, { id: 'g' + Date.now(), current: 0, ...g }] });
+    const newGoal = { id: 'g' + Date.now(), current: 0, ...g };
+    this.set({ goals: [...this.get().goals, newGoal] });
+    // Unlock first goal achievement
+    const state = this.get();
+    if (!state.achievements.find(a=>a.id==='a2')?.earned) {
+      this.set({ achievements: state.achievements.map(a => a.id==='a2'?{...a,earned:true}:a) });
+    }
   },
 
   reset() {
